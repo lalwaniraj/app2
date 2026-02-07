@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/<username>/blue-green-app.git'
+                    url: 'https://github.com/lalwaniraj/app2.git'
             }
         }
 
