@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "rajkumar179/myapp2"
         IMAGE_TAG  = "latest"
-        EC2_HOST   = "3.109.60.232"
+        EC2_HOST   = "3.6.40.18"
     }
 
     stages {
