@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "rajkumar179/myapp2"
         IMAGE_TAG  = "latest"
-        EC2_HOST   = "3.6.40.18"
+        EC2_HOST   = "3.109.60.232"
     }
 
     stages {
@@ -39,21 +39,13 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                withCredentials([
-                    sshUserPrivateKey(
-                        credentialsId: 'node2-key',
-                        keyFileVariable: 'SSH_KEY',
-                        usernameVariable: 'SSH_USER'
-                    ),
-                    usernamePassword(
-                        credentialsId: 'dockerhub-creds',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )
-                ]) {
+                withCredentials([sshUserPrivateKey(
+                    credentialsId: 'node-key',
+                    keyFileVariable: 'SSH_KEY',
+                    usernameVariable: 'SSH_USER'
+                )]) {
                     sh """
 ssh -i \$SSH_KEY -o StrictHostKeyChecking=no \$SSH_USER@${EC2_HOST} << EOF
-echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
 docker pull ${IMAGE_NAME}:${IMAGE_TAG}
 docker stop test_app || true
 docker rm test_app || true
