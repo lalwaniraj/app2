@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "rajkumar179/myapp2"
         IMAGE_TAG  = "latest"
-        EC2_HOST   = "3.109.60.232"
+        EC2_HOST   = "3.6.40.18"
     }
 
     stages {
@@ -40,7 +40,7 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 withCredentials([sshUserPrivateKey(
-                    credentialsId: 'node-key',
+                    credentialsId: 'node2-key',
                     keyFileVariable: 'SSH_KEY',
                     usernameVariable: 'SSH_USER'
                 )]) {
@@ -55,5 +55,3 @@ EOF
                 }
             }
         }
-    }
-}
