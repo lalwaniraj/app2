@@ -39,13 +39,21 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                withCredentials([sshUserPrivateKey(
-                    credentialsId: 'node2-key',
-                    keyFileVariable: 'SSH_KEY',
-                    usernameVariable: 'SSH_USER'
-                )]) {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'node2-key',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    ),
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
                     sh """
 ssh -i \$SSH_KEY -o StrictHostKeyChecking=no \$SSH_USER@${EC2_HOST} << EOF
+echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
 docker pull ${IMAGE_NAME}:${IMAGE_TAG}
 docker stop test_app || true
 docker rm test_app || true
@@ -55,3 +63,5 @@ EOF
                 }
             }
         }
+    }
+}
